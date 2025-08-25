@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أداة التداول الذكية - Smart Trading Tool</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📈</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><text y=\'.9em\' font-size=\'90\'>📈</text></svg>">
     
     <!-- Chart.js للرسوم البيانية -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -18,7 +18,7 @@
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: \'Segoe UI\', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             direction: rtl;
@@ -85,7 +85,7 @@
         }
         
         .panel h2::before {
-            content: '';
+            content: \'\';
             width: 4px;
             height: 20px;
             background: linear-gradient(45deg, #667eea, #764ba2);
@@ -548,81 +548,52 @@
                 
                 <!-- Auto Update Toggle -->
                 <div class="control-group">
-                    <label>
-                        <input type="checkbox" id="autoUpdateToggle"> تحديث تلقائي (كل 5 دقائق)
-                    </label>
-                </div>
-                
-                <!-- Quality Gate Settings -->
-                <div class="quality-gate-status">
-                    <h3>🛡️ بوابة الجودة</h3>
-                    <div class="quality-metrics">
-                        <div class="metric">
-                            <div class="metric-value" id="qualityApprovalRate">0%</div>
-                            <div class="metric-label">معدل الاعتماد</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-value" id="qualityRejectedCount">0</div>
-                            <div class="metric-label">إشارات مرفوضة</div>
-                        </div>
-                    </div>
+                    <label for="autoUpdateToggle">تحديث تلقائي:</label>
+                    <input type="checkbox" id="autoUpdateToggle">
                 </div>
             </div>
             
             <!-- Chart Panel -->
             <div class="panel chart-panel">
                 <h2>📊 الرسم البياني والمؤشرات</h2>
-                
-                <div id="alertContainer"></div>
-                
                 <div class="chart-container">
                     <canvas id="priceChart"></canvas>
                 </div>
                 
-                <!-- Technical Indicators -->
                 <div class="indicators-grid" id="indicatorsGrid">
-                    <div class="indicator-card">
-                        <div class="indicator-name">RSI</div>
-                        <div class="indicator-value" id="rsiValue">-</div>
-                    </div>
-                    <div class="indicator-card">
-                        <div class="indicator-name">MACD</div>
-                        <div class="indicator-value" id="macdValue">-</div>
-                    </div>
-                    <div class="indicator-card">
-                        <div class="indicator-name">EMA 12</div>
-                        <div class="indicator-value" id="ema12Value">-</div>
-                    </div>
-                    <div class="indicator-card">
-                        <div class="indicator-name">EMA 26</div>
-                        <div class="indicator-value" id="ema26Value">-</div>
-                    </div>
-                    <div class="indicator-card">
-                        <div class="indicator-name">Stochastic</div>
-                        <div class="indicator-value" id="stochValue">-</div>
-                    </div>
-                    <div class="indicator-card">
-                        <div class="indicator-name">ATR</div>
-                        <div class="indicator-value" id="atrValue">-</div>
-                    </div>
+                    <!-- Indicators will be dynamically loaded here -->
                 </div>
             </div>
             
             <!-- Signals Panel -->
             <div class="panel signals-panel">
-                <h2>🎯 الإشارات التجارية</h2>
-                
+                <h2>🔔 إشارات التداول</h2>
+                >
                 <div class="signals-list" id="signalsList">
-                    <div style="text-align: center; color: #666; padding: 40px;">
-                        <p>لا توجد إشارات حتى الآن</p>
-                        <p style="font-size: 0.9rem; margin-top: 10px;">ابدأ التحليل لرؤية الإشارات</p>
+                    <!-- Signals will be dynamically loaded here -->
+                </div>
+                
+                <div class="quality-gate-status">
+                    <h3>بوابة الجودة</h3>
+                    <div class="quality-metrics">
+                        <div class="metric">
+                            <div class="metric-value" id="rejectedSignals">0</div>
+                            <div class="metric-label">إشارات مرفوضة</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="approvalRateQuality">0%</div>
+                            <div class="metric-label">معدل الاعتماد</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Include all JavaScript modules -->
+    <!-- Alerts Container -->
+    <div id="alertContainer" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; width: 90%; max-width: 500px;"></div>
+
+    <!-- Include all modules -->
     <script src="data-fetcher.js"></script>
     <script src="technical-analysis.js"></script>
     <script src="quality-gate.js"></script>
@@ -631,72 +602,86 @@
     <script src="trading-engine.js"></script>
     
     <script>
-        // Global variables
-        let tradingEngine = null;
-        let priceChart = null;
+        let tradingEngine;
+        let priceChart;
         let isRunning = false;
-        
-        // Initialize the application
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('تهيئة أداة التداول الذكية...');
-            
-            // Initialize trading engine
-            tradingEngine = new SmartTradingEngine();
-            
-            // Setup event listeners
-            setupEventListeners();
-            
-            // Initialize chart
-            initializeChart();
-            
-            // Load saved settings
-            loadSettings();
-            
-            console.log('تم تهيئة الأداة بنجاح');
-        });
-        
+
+        // UI Elements
+        const pairSelect = document.getElementById(\'pairSelect\');
+        const intervalSelect = document.getElementById(\'intervalSelect\');
+        const candlesInput = document.getElementById(\'candlesInput\');
+        const startBtn = document.getElementById(\'startBtn\');
+        const stopBtn = document.getElementById(\'stopBtn\');
+        const refreshBtn = document.getElementById(\'refreshBtn\');
+        const clearBtn = document.getElementById(\'clearBtn\');
+        const autoUpdateToggle = document.getElementById(\'autoUpdateToggle\');
+        const signalsList = document.getElementById(\'signalsList\');
+        const indicatorsGrid = document.getElementById(\'indicatorsGrid\');
+        const alertContainer = document.getElementById(\'alertContainer\');
+
+        // Stats Elements
+        const totalSignalsEl = document.getElementById(\'totalSignals\');
+        const approvedSignalsEl = document.getElementById(\'approvedSignals\');
+        const approvalRateEl = document.getElementById(\'approvalRate\');
+        const currentPriceEl = document.getElementById(\'currentPrice\');
+        const priceChangeEl = document.getElementById(\'priceChange\');
+        const engineStatusEl = document.getElementById(\'engineStatus\');
+        const rejectedSignalsEl = document.getElementById(\'rejectedSignals\');
+        const approvalRateQualityEl = document.getElementById(\'approvalRateQuality\');
+
         /**
-         * Setup event listeners
+         * Show alert message
          */
-        function setupEventListeners() {
-            // Start button
-            document.getElementById('startBtn').addEventListener('click', startAnalysis);
-            
-            // Stop button
-            document.getElementById('stopBtn').addEventListener('click', stopAnalysis);
-            
-            // Refresh button
-            document.getElementById('refreshBtn').addEventListener('click', refreshData);
-            
-            // Clear button
-            document.getElementById('clearBtn').addEventListener('click', clearSignals);
-            
-            // Auto update toggle
-            document.getElementById('autoUpdateToggle').addEventListener('change', toggleAutoUpdate);
-            
-            // Trading engine events
-            tradingEngine.on('signal', handleNewSignal);
-            tradingEngine.on('analysis', handleAnalysisUpdate);
-            tradingEngine.on('error', handleError);
-            tradingEngine.on('update', handleEngineUpdate);
+        function showAlert(message, type = \'info\', duration = 5000) {
+            const alertDiv = document.createElement(\'div\');
+            alertDiv.className = `alert alert-${type} fade-in`;
+            alertDiv.textContent = message;
+            alertContainer.appendChild(alertDiv);
+
+            setTimeout(() => {
+                alertDiv.classList.remove(\'fade-in\');
+                alertDiv.classList.add(\'hidden\');
+                setTimeout(() => alertDiv.remove(), 500); // Remove after fade out
+            }, duration);
         }
-        
+
         /**
-         * Initialize price chart
+         * Set loading state for buttons
          */
-        function initializeChart() {
-            const ctx = document.getElementById('priceChart').getContext('2d');
-            
+        function setLoadingState(loading) {
+            startBtn.disabled = loading;
+            stopBtn.disabled = !loading;
+            refreshBtn.disabled = loading;
+            candlesInput.disabled = loading;
+            pairSelect.disabled = loading;
+            intervalSelect.disabled = loading;
+            autoUpdateToggle.disabled = loading;
+
+            document.getElementById(\'startBtnText\').classList.toggle(\'hidden\', loading);
+            document.getElementById(\'startBtnSpinner\').classList.toggle(\'hidden\', !loading);
+            engineStatusEl.textContent = loading ? \'يعمل...\' : (isRunning ? \'يعمل\' : \'متوقف\');
+            engineStatusEl.className = loading ? \'status-loading\' : (isRunning ? \'status-running\' : \'status-stopped\');
+        }
+
+        /**
+         * Initialize Chart.js
+         */
+        function initializeChart(labels = [], data = []) {
+            const ctx = document.getElementById(\'priceChart\').getContext(\'2d\');
+            if (priceChart) {
+                priceChart.destroy(); // Destroy existing chart if any
+            }
             priceChart = new Chart(ctx, {
-                type: 'line',
+                type: \'line\',
                 data: {
-                    labels: [],
+                    labels: labels,
                     datasets: [{
-                        label: 'السعر',
-                        data: [],
-                        borderColor: '#667eea',
-                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        label: \'السعر\',
+                        data: data,
+                        borderColor: \'#667eea\',
+                        backgroundColor: \'rgba(102, 126, 234, 0.2)\',
                         borderWidth: 2,
+                        pointRadius: 0,
                         fill: true,
                         tension: 0.4
                     }]
@@ -711,11 +696,11 @@
                     },
                     scales: {
                         x: {
-                            type: 'time',
+                            type: \'time\',
                             time: {
                                 displayFormats: {
-                                    minute: 'HH:mm',
-                                    hour: 'HH:mm'
+                                    minute: \'HH:mm\',
+                                    hour: \'HH:mm\'
                                 }
                             }
                         },
@@ -725,7 +710,7 @@
                     },
                     interaction: {
                         intersect: false,
-                        mode: 'index'
+                        mode: \'index\'
                     }
                 }
             });
@@ -737,358 +722,210 @@
         async function startAnalysis() {
             if (isRunning) return;
             
-            const pair = document.getElementById('pairSelect').value;
-            const interval = document.getElementById('intervalSelect').value;
-            const candles = parseInt(document.getElementById('candlesInput').value);
-            const autoUpdate = document.getElementById('autoUpdateToggle').checked;
+            const pair = pairSelect.value;
+            const interval = intervalSelect.value;
+            const candles = parseInt(candlesInput.value);
+            const autoUpdate = autoUpdateToggle.checked;
             
             // Update UI
             setLoadingState(true);
-            showAlert('بدء التحليل...', 'warning');
+            showAlert(\'بدء التحليل...\', \'warning\');
             
             try {
                 await tradingEngine.start(pair, interval, {
                     outputsize: candles,
                     enableAutoUpdate: autoUpdate
                 });
-                
                 isRunning = true;
-                updateEngineStatus('يعمل', 'running');
-                showAlert(`تم بدء التحليل لـ ${pair} - ${interval}`, 'success');
-                
-            } catch (error) {
-                console.error('خطأ في بدء التحليل:', error);
-                showAlert(`خطأ في بدء التحليل: ${error.message}`, 'error');
-            } finally {
                 setLoadingState(false);
+                showAlert(\'تم بدء التحليل بنجاح!\', \'success\');
+            } catch (error) {
+                setLoadingState(false);
+                showAlert(`خطأ في بدء التحليل: ${error.message}`, \'error\');
+                console.error(\'خطأ في بدء التحليل:\', error);
             }
         }
-        
+
         /**
          * Stop analysis
          */
         function stopAnalysis() {
             if (!isRunning) return;
-            
             tradingEngine.stop();
             isRunning = false;
-            updateEngineStatus('متوقف', 'stopped');
-            showAlert('تم إيقاف التحليل', 'warning');
+            setLoadingState(false);
+            showAlert(\'تم إيقاف التحليل.\', \'info\');
         }
-        
+
         /**
          * Refresh data
          */
         async function refreshData() {
-            if (!isRunning) return;
-            
-            const pair = document.getElementById('pairSelect').value;
-            const interval = document.getElementById('intervalSelect').value;
-            const candles = parseInt(document.getElementById('candlesInput').value);
-            
+            if (!isRunning) {
+                showAlert(\'الرجاء بدء التحليل أولاً.\', \'info\');
+                return;
+            }
             setLoadingState(true);
-            showAlert('تحديث البيانات...', 'warning');
-            
+            showAlert(\'تحديث البيانات...\', \'warning\');
             try {
-                await tradingEngine.performAnalysis(pair, interval, candles);
-                showAlert('تم تحديث البيانات بنجاح', 'success');
-            } catch (error) {
-                console.error('خطأ في تحديث البيانات:', error);
-                showAlert(`خطأ في تحديث البيانات: ${error.message}`, 'error');
-            } finally {
+                await tradingEngine.performAnalysis(tradingEngine.state.currentPair, tradingEngine.state.currentInterval, parseInt(candlesInput.value));
                 setLoadingState(false);
+                showAlert(\'تم تحديث البيانات بنجاح!\', \'success\');
+            } catch (error) {
+                setLoadingState(false);
+                showAlert(`خطأ في تحديث البيانات: ${error.message}`, \'error\');
+                console.error(\'خطأ في تحديث البيانات:\', error);
             }
         }
-        
+
         /**
          * Clear signals
          */
         function clearSignals() {
             tradingEngine.clearActiveSignals();
-            document.getElementById('signalsList').innerHTML = `
-                <div style="text-align: center; color: #666; padding: 40px;">
-                    <p>لا توجد إشارات حتى الآن</p>
-                    <p style="font-size: 0.9rem; margin-top: 10px;">ابدأ التحليل لرؤية الإشارات</p>
-                </div>
-            `;
-            showAlert('تم مسح الإشارات', 'success');
+            signalsList.innerHTML = \'\';
+            updateStats();
+            showAlert(\'تم مسح جميع الإشارات.\', \'info\');
         }
-        
+
         /**
-         * Toggle auto update
+         * Update UI with latest analysis data
          */
-        function toggleAutoUpdate() {
-            const enabled = document.getElementById('autoUpdateToggle').checked;
-            
-            if (enabled && isRunning) {
-                tradingEngine.enableAutoUpdate();
-                showAlert('تم تفعيل التحديث التلقائي', 'success');
-            } else {
-                tradingEngine.disableAutoUpdate();
-                showAlert('تم إلغاء التحديث التلقائي', 'warning');
+        function updateUI(analysisData) {
+            if (!analysisData || !analysisData.indicators) return;
+
+            const { indicators, evaluations, approvedSignals, potentialSignals, candlesCount } = analysisData;
+
+            // Update Chart
+            const labels = analysisData.candles.map(c => new Date(c.datetime));
+            const data = analysisData.candles.map(c => c.close);
+            priceChart.data.labels = labels;
+            priceChart.data.datasets[0].data = data;
+            priceChart.update();
+
+            // Update Indicators Grid
+            indicatorsGrid.innerHTML = \'\';
+            const indicatorValues = {
+                \"RSI\": indicators.rsi ? indicators.rsi.toFixed(2) : \'N/A\',
+                \"MACD Hist\": indicators.macdHistogram ? indicators.macdHistogram.toFixed(4) : \'N/A\',
+                \"EMA12\": indicators.ema12 ? indicators.ema12.toFixed(4) : \'N/A\',
+                \"EMA26\": indicators.ema26 ? indicators.ema26.toFixed(4) : \'N/A\',
+                \"EMA50\": indicators.ema50 ? indicators.ema50.toFixed(4) : \'N/A\',
+                \"BB Upper\": indicators.bbUpper ? indicators.bbUpper.toFixed(4) : \'N/A\',
+                \"BB Middle\": indicators.bbMiddle ? indicators.bbMiddle.toFixed(4) : \'N/A\',
+                \"BB Lower\": indicators.bbLower ? indicators.bbLower.toFixed(4) : \'N/A\',
+                \"ATR\": indicators.atr ? indicators.atr.toFixed(4) : \'N/A\',
+                \"Stoch K\": indicators.stochasticK ? indicators.stochasticK.toFixed(2) : \'N/A\',
+                \"Stoch D\": indicators.stochasticD ? indicators.stochasticD.toFixed(2) : \'N/A\'
+            };
+
+            for (const key in indicatorValues) {
+                const card = document.createElement(\'div\');
+                card.className = \'indicator-card\';
+                card.innerHTML = `
+                    <div class=\'indicator-name\'>${key}</div>
+                    <div class=\'indicator-value\'>${indicatorValues[key]}</div>
+                `;
+                indicatorsGrid.appendChild(card);
             }
-        }
-        
-        /**
-         * Handle new signal
-         */
-        function handleNewSignal(evaluation) {
-            console.log('إشارة جديدة:', evaluation);
-            addSignalToList(evaluation);
-            updateStatistics();
-        }
-        
-        /**
-         * Handle analysis update
-         */
-        function handleAnalysisUpdate(analysis) {
-            console.log('تحديث التحليل:', analysis);
-            updateChart(analysis);
-            updateIndicators(analysis.indicators);
-            updateStatistics();
-        }
-        
-        /**
-         * Handle error
-         */
-        function handleError(error) {
-            console.error('خطأ في المحرك:', error);
-            showAlert(`خطأ: ${error.message}`, 'error');
-        }
-        
-        /**
-         * Handle engine update
-         */
-        function handleEngineUpdate(update) {
-            console.log('تحديث المحرك:', update);
-        }
-        
-        /**
-         * Add signal to list
-         */
-        function addSignalToList(evaluation) {
-            const signalsList = document.getElementById('signalsList');
-            
-            // Clear empty message if exists
-            if (signalsList.children.length === 1 && signalsList.children[0].style.textAlign === 'center') {
-                signalsList.innerHTML = '';
-            }
-            
-            const signal = evaluation.signal;
-            const signalElement = document.createElement('div');
-            signalElement.className = `signal-item signal-${signal.direction} fade-in`;
-            
-            const directionText = signal.direction === 'buy' ? 'شراء' : 'بيع';
-            const directionIcon = signal.direction === 'buy' ? '📈' : '📉';
-            const confidenceColor = evaluation.confidence >= 80 ? '#10b981' : 
-                                   evaluation.confidence >= 60 ? '#f59e0b' : '#ef4444';
-            
-            signalElement.innerHTML = `
-                <div class="signal-header">
-                    <div class="signal-type">${directionIcon} ${signal.type} - ${directionText}</div>
-                    <div class="signal-time">${new Date(evaluation.timestamp).toLocaleTimeString('ar-SA')}</div>
-                </div>
-                <div class="signal-price">${signal.price.toFixed(5)}</div>
-                <div style="font-size: 0.9rem; color: #666; margin: 5px 0;">${signal.reason}</div>
-                <div class="signal-confidence">
-                    <span style="font-size: 0.8rem;">الثقة:</span>
-                    <div class="confidence-bar">
-                        <div class="confidence-fill" style="width: ${evaluation.confidence}%; background: ${confidenceColor};"></div>
+
+            // Update Signals List
+            signalsList.innerHTML = \'\';
+            const latestSignals = tradingEngine.getActiveSignals(10); // Get latest 10 signals
+            latestSignals.forEach(signal => {
+                const signalItem = document.createElement(\'div\');
+                signalItem.className = `signal-item ${signal.direction === \'buy\' ? \'signal-buy\' : \'signal-sell\'} fade-in`;
+                signalItem.innerHTML = `
+                    <div class=\'signal-header\'>
+                        <div class=\'signal-type\'>${signal.direction === \'buy\' ? \'شراء ⬆️\' : \'بيع ⬇️\'} - ${signal.source}</div>
+                        <div class=\'signal-time\'>${new Date(signal.timestamp).toLocaleTimeString(\'ar-EG\', { hour: \'2-digit\', minute: \'2-digit\', second: \'2-digit\'})}</div>
                     </div>
-                    <span style="font-size: 0.8rem; font-weight: 600;">${evaluation.confidence}%</span>
-                </div>
-            `;
-            
-            signalsList.insertBefore(signalElement, signalsList.firstChild);
-            
-            // Keep only last 20 signals
-            while (signalsList.children.length > 20) {
-                signalsList.removeChild(signalsList.lastChild);
-            }
+                    <div class=\'signal-price\'>السعر: ${signal.price.toFixed(5)}</div>
+                    <div class=\'signal-reason\'>السبب: ${signal.reason}</div>
+                    <div class=\'signal-confidence\'>
+                        <span>الثقة: ${signal.confidence.toFixed(2)}%</span>
+                        <div class=\'confidence-bar\'>
+                            <div class=\'confidence-fill\' style=\'width: ${signal.confidence}%;\'></div>
+                        </div>
+                    </div>
+                `;
+                signalsList.appendChild(signalItem);
+            });
+
+            // Update Stats
+            updateStats();
         }
-        
+
         /**
-         * Update chart
+         * Update general statistics
          */
-        function updateChart(analysis) {
-            if (!priceChart || !analysis.indicators) return;
-            
-            // Get recent price data from trading engine
+        function updateStats() {
             const status = tradingEngine.getStatus();
-            if (!status.lastAnalysis) return;
-            
-            // For now, just update with current price
-            const currentTime = new Date();
-            const currentPrice = analysis.indicators.price;
-            
-            // Add new data point
-            priceChart.data.labels.push(currentTime);
-            priceChart.data.datasets[0].data.push(currentPrice);
-            
-            // Keep only last 50 points
-            if (priceChart.data.labels.length > 50) {
-                priceChart.data.labels.shift();
-                priceChart.data.datasets[0].data.shift();
-            }
-            
-            priceChart.update('none');
-        }
-        
-        /**
-         * Update indicators
-         */
-        function updateIndicators(indicators) {
-            if (!indicators) return;
-            
-            document.getElementById('rsiValue').textContent = indicators.rsi ? indicators.rsi.toFixed(2) : '-';
-            document.getElementById('macdValue').textContent = indicators.macdHistogram ? indicators.macdHistogram.toFixed(6) : '-';
-            document.getElementById('ema12Value').textContent = indicators.ema12 ? indicators.ema12.toFixed(5) : '-';
-            document.getElementById('ema26Value').textContent = indicators.ema26 ? indicators.ema26.toFixed(5) : '-';
-            document.getElementById('stochValue').textContent = indicators.stochasticK ? indicators.stochasticK.toFixed(2) : '-';
-            document.getElementById('atrValue').textContent = indicators.atr ? indicators.atr.toFixed(6) : '-';
-            
-            // Update current price and change
-            if (indicators.price) {
-                document.getElementById('currentPrice').textContent = indicators.price.toFixed(5);
-                
-                if (indicators.priceChange) {
-                    const changeElement = document.getElementById('priceChange');
-                    const changePercent = indicators.priceChangePercent || 0;
-                    const changeText = `${indicators.priceChange > 0 ? '+' : ''}${indicators.priceChange.toFixed(5)} (${changePercent.toFixed(2)}%)`;
-                    
-                    changeElement.textContent = changeText;
-                    changeElement.style.color = indicators.priceChange > 0 ? '#10b981' : '#ef4444';
+            totalSignalsEl.textContent = status.qualityGateStats.totalEvaluated;
+            approvedSignalsEl.textContent = status.qualityGateStats.totalApproved;
+            approvalRateEl.textContent = status.qualityGateStats.approvalRate.toFixed(2) + \'%\';
+            rejectedSignalsEl.textContent = status.qualityGateStats.totalRejected;
+            approvalRateQualityEl.textContent = status.qualityGateStats.approvalRate.toFixed(2) + \'%\';
+
+            if (status.lastAnalysis && status.lastAnalysis.candlesCount > 0) {
+                const lastCandle = status.lastAnalysis.candles[status.lastAnalysis.candlesCount - 1];
+                const prevCandle = status.lastAnalysis.candles[status.lastAnalysis.candlesCount - 2];
+                currentPriceEl.textContent = lastCandle.close.toFixed(5);
+                if (prevCandle) {
+                    const change = ((lastCandle.close - prevCandle.close) / prevCandle.close) * 100;
+                    priceChangeEl.textContent = `${change.toFixed(2)}%`;
+                    priceChangeEl.style.color = change >= 0 ? \'#10b981\' : \'#ef4444\';
                 }
-            }
-        }
-        
-        /**
-         * Update statistics
-         */
-        function updateStatistics() {
-            const engineStats = tradingEngine.getStatus();
-            const qualityStats = tradingEngine.qualityGate.getStats();
-            
-            // Update main stats
-            document.getElementById('totalSignals').textContent = qualityStats.totalSignals || 0;
-            document.getElementById('approvedSignals').textContent = qualityStats.approvedSignals || 0;
-            document.getElementById('approvalRate').textContent = qualityStats.approvalRate || '0%';
-            
-            // Update quality gate stats
-            document.getElementById('qualityApprovalRate').textContent = qualityStats.approvalRate || '0%';
-            document.getElementById('qualityRejectedCount').textContent = qualityStats.rejectedSignals || 0;
-        }
-        
-        /**
-         * Update engine status
-         */
-        function updateEngineStatus(status, type) {
-            const statusElement = document.getElementById('engineStatus');
-            statusElement.textContent = status;
-            
-            // Remove existing status classes
-            statusElement.classList.remove('status-running', 'status-stopped', 'status-loading');
-            
-            // Add new status class
-            if (type) {
-                statusElement.classList.add(`status-${type}`);
-            }
-        }
-        
-        /**
-         * Set loading state
-         */
-        function setLoadingState(loading) {
-            const startBtn = document.getElementById('startBtn');
-            const stopBtn = document.getElementById('stopBtn');
-            const startBtnText = document.getElementById('startBtnText');
-            const startBtnSpinner = document.getElementById('startBtnSpinner');
-            
-            if (loading) {
-                startBtn.disabled = true;
-                startBtnText.classList.add('hidden');
-                startBtnSpinner.classList.remove('hidden');
-                updateEngineStatus('جاري التحميل...', 'loading');
             } else {
-                startBtn.disabled = isRunning;
-                stopBtn.disabled = !isRunning;
-                startBtnText.classList.remove('hidden');
-                startBtnSpinner.classList.add('hidden');
+                currentPriceEl.textContent = \'-\
+';
+                priceChangeEl.textContent = \'-\
+';
+                priceChangeEl.style.color = \'#333\';
             }
+
+            engineStatusEl.textContent = status.isRunning ? \'يعمل\' : \'متوقف\';
+            engineStatusEl.className = status.isRunning ? \'status-running\' : \'status-stopped\';
         }
-        
-        /**
-         * Show alert
-         */
-        function showAlert(message, type) {
-            const alertContainer = document.getElementById('alertContainer');
-            
-            const alertElement = document.createElement('div');
-            alertElement.className = `alert alert-${type} fade-in`;
-            alertElement.textContent = message;
-            
-            alertContainer.appendChild(alertElement);
-            
-            // Auto remove after 5 seconds
-            setTimeout(() => {
-                if (alertElement.parentNode) {
-                    alertElement.parentNode.removeChild(alertElement);
+
+        // Event Listeners for buttons
+        startBtn.addEventListener(\'click\', startAnalysis);
+        stopBtn.addEventListener(\'click\', stopAnalysis);
+        refreshBtn.addEventListener(\'click\', refreshData);
+        clearBtn.addEventListener(\'click\', clearSignals);
+
+        // Initialize on DOMContentLoaded
+        document.addEventListener(\'DOMContentLoaded\', () => {
+            tradingEngine = new SmartTradingEngine();
+            initializeChart();
+            updateStats(); // Initial UI update
+
+            // Subscribe to engine events
+            tradingEngine.on(\'analysis\', (data) => {
+                updateUI(data);
+            });
+            tradingEngine.on(\'signal\', (signal) => {
+                // Signal will be added via updateUI, but can be used for real-time notifications
+                console.log(\'New Signal:\', signal);
+            });
+            tradingEngine.on(\'error\', (error) => {
+                showAlert(`خطأ في المحرك: ${error.message}`, \'error\');
+                console.error(\'Engine Error:\', error);
+            });
+            tradingEngine.on(\'update\', (data) => {
+                console.log(\'Engine Update:\', data);
+                if (data.type === \'engine_started\') {
+                    setLoadingState(false);
+                    isRunning = true;
+                    stopBtn.disabled = false;
+                    startBtn.disabled = true;
+                } else if (data.type === \'engine_stopped\') {
+                    setLoadingState(false);
+                    isRunning = false;
+                    stopBtn.disabled = true;
+                    startBtn.disabled = false;
                 }
-            }, 5000);
-        }
-        
-        /**
-         * Load saved settings
-         */
-        function loadSettings() {
-            // Load from localStorage if available
-            try {
-                const savedPair = localStorage.getItem('trading_selected_pair');
-                const savedInterval = localStorage.getItem('trading_selected_interval');
-                const savedCandles = localStorage.getItem('trading_candles_count');
-                
-                if (savedPair) {
-                    document.getElementById('pairSelect').value = savedPair;
-                }
-                
-                if (savedInterval) {
-                    document.getElementById('intervalSelect').value = savedInterval;
-                }
-                
-                if (savedCandles) {
-                    document.getElementById('candlesInput').value = savedCandles;
-                }
-            } catch (error) {
-                console.warn('فشل في تحميل الإعدادات المحفوظة:', error);
-            }
-        }
-        
-        /**
-         * Save settings
-         */
-        function saveSettings() {
-            try {
-                localStorage.setItem('trading_selected_pair', document.getElementById('pairSelect').value);
-                localStorage.setItem('trading_selected_interval', document.getElementById('intervalSelect').value);
-                localStorage.setItem('trading_candles_count', document.getElementById('candlesInput').value);
-            } catch (error) {
-                console.warn('فشل في حفظ الإعدادات:', error);
-            }
-        }
-        
-        // Save settings when changed
-        document.getElementById('pairSelect').addEventListener('change', saveSettings);
-        document.getElementById('intervalSelect').addEventListener('change', saveSettings);
-        document.getElementById('candlesInput').addEventListener('change', saveSettings);
-        
-        // Auto-start demo with backup data after 2 seconds
-        setTimeout(() => {
-            if (!isRunning) {
-                console.log('بدء العرض التوضيحي التلقائي...');
-                startAnalysis();
-            }
-        }, 2000);
+            });
     </script>
 </body>
 </html>
-
