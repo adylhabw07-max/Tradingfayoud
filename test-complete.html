@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار شامل - أداة التداول الذكية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            direction: rtl;
+            color: #333;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .test-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .test-result {
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .test-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        
+        .test-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+        
+        .test-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #3b82f6;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 اختبار شامل - أداة التداول الذكية</h1>
+            <p>فحص جميع المكونات والوظائف</p>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔧 اختبارات المكونات الأساسية</h2>
+            <button class="btn" onclick="testComponents()">تشغيل اختبارات المكونات</button>
+            <div id="componentTests"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>📊 اختبار جلب البيانات</h2>
+            <button class="btn" onclick="testDataFetching()">اختبار جلب البيانات</button>
+            <div id="dataTests"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>📈 اختبار التحليل الفني</h2>
+            <button class="btn" onclick="testTechnicalAnalysis()">اختبار التحليل الفني</button>
+            <div id="analysisTests"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🛡️ اختبار بوابة الجودة</h2>
+            <button class="btn" onclick="testQualityGate()">اختبار بوابة الجودة</button>
+            <div id="qualityTests"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>💾 اختبار التخزين المحلي</h2>
+            <button class="btn" onclick="testStorage()">اختبار التخزين</button>
+            <div id="storageTests"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🚀 اختبار المحرك الكامل</h2>
+            <button class="btn" onclick="testFullEngine()">اختبار المحرك الكامل</button>
+            <div id="engineTests"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>📊 إحصائيات الاختبار</h2>
+            <div class="stats-grid" id="testStats">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalTests">0</div>
+                    <div class="stat-label">إجمالي الاختبارات</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="passedTests">0</div>
+                    <div class="stat-label">اختبارات ناجحة</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="failedTests">0</div>
+                    <div class="stat-label">اختبارات فاشلة</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="successRate">0%</div>
+                    <div class="stat-label">معدل النجاح</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Include all modules -->
+    <script src="data-fetcher.js"></script>
+    <script src="technical-analysis.js"></script>
+    <script src="quality-gate.js"></script>
+    <script src="storage-manager.js"></script>
+    <script src="backup-data.js"></script>
+    <script src="trading-engine.js"></script>
+    
+    <script>
+        // Test statistics
+        let testStats = {
+            total: 0,
+            passed: 0,
+            failed: 0
+        };
+        
+        /**
+         * Add test result
+         */
+        function addTestResult(container, testName, success, message, details = null) {
+            testStats.total++;
+            if (success) {
+                testStats.passed++;
+            } else {
+                testStats.failed++;
+            }
+            
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${success ? 'test-success' : 'test-error'}`;
+            
+            let content = `${success ? '✅' : '❌'} ${testName}: ${message}`;
+            if (details) {
+                content += `\n${JSON.stringify(details, null, 2)}`;
+            }
+            
+            resultDiv.textContent = content;
+            document.getElementById(container).appendChild(resultDiv);
+            
+            updateTestStats();
+        }
+        
+        /**
+         * Add info message
+         */
+        function addInfo(container, message) {
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'test-result test-info';
+            infoDiv.textContent = `ℹ️ ${message}`;
+            document.getElementById(container).appendChild(infoDiv);
+        }
+        
+        /**
+         * Update test statistics
+         */
+        function updateTestStats() {
+            document.getElementById('totalTests').textContent = testStats.total;
+            document.getElementById('passedTests').textContent = testStats.passed;
+            document.getElementById('failedTests').textContent = testStats.failed;
+            
+            const successRate = testStats.total > 0 ? 
+                Math.round((testStats.passed / testStats.total) * 100) : 0;
+            document.getElementById('successRate').textContent = `${successRate}%`;
+        }
+        
+        /**
+         * Test components loading
+         */
+        function testComponents() {
+            const container = 'componentTests';
+            document.getElementById(container).innerHTML = '';
+            
+            addInfo(container, 'بدء اختبار تحميل المكونات...');
+            
+            // Test DataFetcher
+            try {
+                const fetcher = new DataFetcher();
+                addTestResult(container, 'DataFetcher', true, 'تم تحميل وحدة جلب البيانات بنجاح');
+            } catch (error) {
+                addTestResult(container, 'DataFetcher', false, `فشل في تحميل وحدة جلب البيانات: ${error.message}`);
+            }
+            
+            // Test TechnicalAnalysis
+            try {
+                const analysis = new TechnicalAnalysis();
+                addTestResult(container, 'TechnicalAnalysis', true, 'تم تحميل وحدة التحليل الفني بنجاح');
+            } catch (error) {
+                addTestResult(container, 'TechnicalAnalysis', false, `فشل في تحميل وحدة التحليل الفني: ${error.message}`);
+            }
+            
+            // Test QualityGate
+            try {
+                const qualityGate = new QualityGate();
+                addTestResult(container, 'QualityGate', true, 'تم تحميل وحدة بوابة الجودة بنجاح');
+            } catch (error) {
+                addTestResult(container, 'QualityGate', false, `فشل في تحميل وحدة بوابة الجودة: ${error.message}`);
+            }
+            
+            // Test StorageManager
+            try {
+                const storage = new StorageManager();
+                addTestResult(container, 'StorageManager', true, 'تم تحميل وحدة إدارة التخزين بنجاح');
+            } catch (error) {
+                addTestResult(container, 'StorageManager', false, `فشل في تحميل وحدة إدارة التخزين: ${error.message}`);
+            }
+            
+            // Test BackupDataGenerator
+            try {
+                const backupGen = new BackupDataGenerator();
+                addTestResult(container, 'BackupDataGenerator', true, 'تم تحميل مولد البيانات الاحتياطية بنجاح');
+            } catch (error) {
+                addTestResult(container, 'BackupDataGenerator', false, `فشل في تحميل مولد البيانات الاحتياطية: ${error.message}`);
+            }
+            
+            // Test SmartTradingEngine
+            try {
+                const engine = new SmartTradingEngine();
+                addTestResult(container, 'SmartTradingEngine', true, 'تم تحميل المحرك الذكي بنجاح');
+            } catch (error) {
+                addTestResult(container, 'SmartTradingEngine', false, `فشل في تحميل المحرك الذكي: ${error.message}`);
+            }
+        }
+        
+        /**
+         * Test data fetching
+         */
+        async function testDataFetching() {
+            const container = 'dataTests';
+            document.getElementById(container).innerHTML = '';
+            
+            addInfo(container, 'بدء اختبار جلب البيانات...');
+            
+            try {
+                const fetcher = new DataFetcher();
+                
+                // Test backup data
+                const backupGen = new BackupDataGenerator();
+                const backupData = backupGen.getBackupData('EUR/USD', '5min', 50);
+                
+                if (backupData && backupData.values && backupData.values.length > 0) {
+                    addTestResult(container, 'البيانات الاحتياطية', true, 
+                        `تم جلب ${backupData.values.length} شمعة من البيانات الاحتياطية`);
+                } else {
+                    addTestResult(container, 'البيانات الاحتياطية', false, 'فشل في جلب البيانات الاحتياطية');
+                }
+                
+                // Test supported pairs
+                const supportedPairs = backupGen.getSupportedPairs();
+                addTestResult(container, 'الأزواج المدعومة', true, 
+                    `يتم دعم ${supportedPairs.length} زوج عملات`, supportedPairs.slice(0, 5));
+                
+            } catch (error) {
+                addTestResult(container, 'جلب البيانات', false, `خطأ في جلب البيانات: ${error.message}`);
+            }
+        }
+        
+        /**
+         * Test technical analysis
+         */
+        function testTechnicalAnalysis() {
+            const container = 'analysisTests';
+            document.getElementById(container).innerHTML = '';
+            
+            addInfo(container, 'بدء اختبار التحليل الفني...');
+            
+            try {
+                const analysis = new TechnicalAnalysis();
+                const backupGen = new BackupDataGenerator();
+                const data = backupGen.getBackupData('EUR/USD', '5min', 100);
+                
+                if (!data || !data.values || data.values.length < 50) {
+                    addTestResult(container, 'بيانات التحليل', false, 'بيانات غير كافية للتحليل');
+                    return;
+                }
+                
+                // Test RSI calculation
+                const rsi = analysis.calculateRSI(data.values);
+                if (rsi && rsi.length > 0) {
+                    const lastRSI = rsi[rsi.length - 1];
+                    addTestResult(container, 'حساب RSI', true, 
+                        `آخر قيمة RSI: ${lastRSI.toFixed(2)}`);
+                } else {
+                    addTestResult(container, 'حساب RSI', false, 'فشل في حساب RSI');
+                }
+                
+                // Test MACD calculation
+                const macd = analysis.calculateMACD(data.values);
+                if (macd && macd.histogram && macd.histogram.length > 0) {
+                    const lastMACD = macd.histogram[macd.histogram.length - 1];
+                    addTestResult(container, 'حساب MACD', true, 
+                        `آخر قيمة MACD Histogram: ${lastMACD.toFixed(6)}`);
+                } else {
+                    addTestResult(container, 'حساب MACD', false, 'فشل في حساب MACD');
+                }
+                
+                // Test EMA calculation
+                const ema12 = analysis.calculateEMA(data.values, 12);
+                if (ema12 && ema12.length > 0) {
+                    const lastEMA = ema12[ema12.length - 1];
+                    addTestResult(container, 'حساب EMA', true, 
+                        `آخر قيمة EMA(12): ${lastEMA.toFixed(5)}`);
+                } else {
+                    addTestResult(container, 'حساب EMA', false, 'فشل في حساب EMA');
+                }
+                
+                // Test Bollinger Bands
+                const bb = analysis.calculateBollingerBands(data.values);
+                if (bb && bb.upper && bb.upper.length > 0) {
+                    const lastUpper = bb.upper[bb.upper.length - 1];
+                    const lastLower = bb.lower[bb.lower.length - 1];
+                    addTestResult(container, 'حساب Bollinger Bands', true, 
+                        `النطاق العلوي: ${lastUpper.toFixed(5)}, النطاق السفلي: ${lastLower.toFixed(5)}`);
+                } else {
+                    addTestResult(container, 'حساب Bollinger Bands', false, 'فشل في حساب Bollinger Bands');
+                }
+                
+                // Test complete analysis
+                const completeAnalysis = analysis.performCompleteAnalysis(data.values);
+                if (completeAnalysis && completeAnalysis.indicators) {
+                    addTestResult(container, 'التحليل الشامل', true, 
+                        'تم إجراء التحليل الشامل بنجاح', {
+                            rsi: completeAnalysis.indicators.rsi,
+                            macdHistogram: completeAnalysis.indicators.macdHistogram,
+                            price: completeAnalysis.indicators.price
+                        });
+                } else {
+                    addTestResult(container, 'التحليل الشامل', false, 'فشل في التحليل الشامل');
+                }
+                
+            } catch (error) {
+                addTestResult(container, 'التحليل الفني', false, `خطأ في التحليل الفني: ${error.message}`);
+            }
+        }
+        
+        /**
+         * Test quality gate
+         */
+        function testQualityGate() {
+            const container = 'qualityTests';
+            document.getElementById(container).innerHTML = '';
+            
+            addInfo(container, 'بدء اختبار بوابة الجودة...');
+            
+            try {
+                const qualityGate = new QualityGate();
+                const analysis = new TechnicalAnalysis();
+                const backupGen = new BackupDataGenerator();
+                const data = backupGen.getBackupData('EUR/USD', '5min', 100);
+                
+                if (!data || !data.values || data.values.length < 50) {
+                    addTestResult(container, 'بيانات بوابة الجودة', false, 'بيانات غير كافية');
+                    return;
+                }
+                
+                const completeAnalysis = analysis.performCompleteAnalysis(data.values);
+                
+                // Create test signal
+                const testSignal = {
+                    type: 'technical',
+                    direction: 'buy',
+                    price: completeAnalysis.indicators.price,
+                    reason: 'اختبار بوابة الجودة',
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Test signal evaluation
+                const evaluation = qualityGate.evaluateSignal(testSignal, completeAnalysis);
+                
+                if (evaluation) {
+                    addTestResult(container, 'تقييم الإشارة', true, 
+                        `تم تقييم الإشارة - الثقة: ${evaluation.confidence}%`, {
+                            approved: evaluation.approved,
+                            confidence: evaluation.confidence,
+                            reasons: evaluation.reasons.slice(0, 3)
+                        });
+                } else {
+                    addTestResult(container, 'تقييم الإشارة', false, 'فشل في تقييم الإشارة');
+                }
+                
+                // Test quality criteria
+                const criteria = qualityGate.checkQualityCriteria(testSignal, completeAnalysis);
+                addTestResult(container, 'معايير الجودة', true, 
+                    `تم فحص ${Object.keys(criteria).length} معيار جودة`);
+                
+                // Test statistics
+                const stats = qualityGate.getStats();
+                addTestResult(container, 'إحصائيات بوابة الجودة', true, 
+                    'تم الحصول على الإحصائيات', stats);
+                
+            } catch (error) {
+                addTestResult(container, 'بوابة الجودة', false, `خطأ في بوابة الجودة: ${error.message}`);
+            }
+        }
+        
+        /**
+         * Test storage
+         */
+        async function testStorage() {
+            const container = 'storageTests';
+            document.getElementById(container).innerHTML = '';
+            
+            addInfo(container, 'بدء اختبار التخزين المحلي...');
+            
+            try {
+                const storage = new StorageManager();
+                
+                // Test basic storage
+                const testData = { test: 'data', timestamp: Date.now() };
+                await storage.set('test_key', testData);
+                
+                const retrievedData = await storage.get('test_key');
+                if (retrievedData && retrievedData.test === 'data') {
+                    addTestResult(container, 'التخزين الأساسي', true, 'تم حفظ واسترداد البيانات بنجاح');
+                } else {
+                    addTestResult(container, 'التخزين الأساسي', false, 'فشل في حفظ أو استرداد البيانات');
+                }
+                
+                // Test cache functionality
+                await storage.setCache('cache_test', { cached: true }, 60); // 60 seconds
+                const cachedData = await storage.getCache('cache_test');
+                
+                if (cachedData && cachedData.cached === true) {
+                    addTestResult(container, 'التخزين المؤقت', true, 'تم حفظ واسترداد البيانات المؤقتة بنجاح');
+                } else {
+                    addTestResult(container, 'التخزين المؤقت', false, 'فشل في التخزين المؤقت');
+                }
+                
+                // Test statistics
+                const stats = storage.getStats();
+                addTestResult(container, 'إحصائيات التخزين', true, 
+                    'تم الحصول على إحصائيات التخزين', {
+                        totalItems: stats.totalItems,
+                        totalSize: stats.totalSize,
+                        cacheHits: stats.cacheHits
+                    });
+                
+                // Test cleanup
+                await storage.cleanup();
+                addTestResult(container, 'تنظيف التخزين', true, 'تم تنظيف البيانات المنتهية الصلاحية');
+                
+            } catch (error) {
+                addTestResult(container, 'التخزين المحلي', false, `خطأ في التخزين: ${error.message}`);
+            }
+        }
+        
+        /**
+         * Test full engine
+         */
+        async function testFullEngine() {
+            const container = 'engineTests';
+            document.getElementById(container).innerHTML = '';
+            
+            addInfo(container, 'بدء اختبار المحرك الكامل...');
+            
+            try {
+                const engine = new SmartTradingEngine();
+                
+                // Test engine initialization
+                addTestResult(container, 'تهيئة المحرك', true, 'تم تهيئة المحرك بنجاح');
+                
+                // Test engine status
+                const initialStatus = engine.getStatus();
+                addTestResult(container, 'حالة المحرك', true, 
+                    'تم الحصول على حالة المحرك', {
+                        isRunning: initialStatus.isRunning,
+                        currentPair: initialStatus.currentPair
+                    });
+                
+                // Test analysis with backup data
+                const analysisResult = await engine.performAnalysis('EUR/USD', '5min', 100);
+                
+                if (analysisResult && analysisResult.indicators) {
+                    addTestResult(container, 'تحليل البيانات', true, 
+                        'تم إجراء التحليل بنجاح', {
+                            price: analysisResult.indicators.price,
+                            rsi: analysisResult.indicators.rsi,
+                            macdHistogram: analysisResult.indicators.macdHistogram
+                        });
+                } else {
+                    addTestResult(container, 'تحليل البيانات', false, 'فشل في تحليل البيانات');
+                }
+                
+                // Test signal generation (if any)
+                const signals = engine.getActiveSignals();
+                addTestResult(container, 'الإشارات النشطة', true, 
+                    `عدد الإشارات النشطة: ${signals.length}`);
+                
+                // Test engine statistics
+                const finalStatus = engine.getStatus();
+                addTestResult(container, 'إحصائيات المحرك', true, 
+                    'تم الحصول على إحصائيات المحرك', {
+                        totalAnalyses: finalStatus.totalAnalyses,
+                        totalSignals: finalStatus.totalSignals,
+                        lastUpdate: finalStatus.lastUpdate
+                    });
+                
+            } catch (error) {
+                addTestResult(container, 'المحرك الكامل', false, `خطأ في المحرك: ${error.message}`);
+            }
+        }
+        
+        // Auto-run component tests on load
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                testComponents();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
+
